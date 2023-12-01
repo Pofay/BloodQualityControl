@@ -1,5 +1,4 @@
-﻿using System;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using Bloodstone.API;
@@ -11,7 +10,7 @@ namespace BloodQualityControl;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("gg.deca.VampireCommandFramework")]
 [BepInDependency("gg.deca.Bloodstone")]
-[Bloodstone.API.Reloadable]
+[Reloadable]
 public class Plugin : BasePlugin, IRunOnInitialized
 {
     Harmony _harmony;
