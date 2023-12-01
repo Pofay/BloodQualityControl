@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BepInEx.Logging;
 using BloodQualityControl.Data;
+using BloodQualityControl.Services;
 using ProjectM;
 using Unity.Entities;
 
@@ -13,10 +14,12 @@ namespace BloodQualityControl
     {
         public static EntityManager ServerEntityManager { get; private set; }
         public static ManualLogSource Logger { get; } = Plugin.Logger;
+        public static BloodQualityControlService BloodQualityControlService { get; private set; }
 
         internal static void Initialize(World Server)
         {
             ServerEntityManager = Server.EntityManager;
+            BloodQualityControlService = new();
             Logger.LogInfo($"{nameof(Initialize)} completed");
         }
 
@@ -34,16 +37,16 @@ namespace BloodQualityControl
 
         internal static PrefabGUID GetPrefabGUID(Entity entity)
         {
-            PrefabGUID guid;
-            try
+            if (ServerEntityManager.TryGetComponentData(entity, out PrefabGUID guid))
             {
-                guid = ServerEntityManager.GetComponentData<PrefabGUID>(entity);
+                return guid;
             }
-            catch
+            else
             {
-                guid.GuidHash = 0;
+                var emptyPrefabGuid = PrefabGUID.Empty;
+                emptyPrefabGuid.GuidHash = 0;
+                return emptyPrefabGuid;
             }
-            return guid;
         }
     }
 }
