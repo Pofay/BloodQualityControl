@@ -1,10 +1,8 @@
 using System;
 using HarmonyLib;
-using Il2CppSystem.Security.Util;
 using ProjectM;
 using ProjectM.Shared.Systems;
 using Unity.Entities;
-using VampireCommandFramework;
 
 namespace BloodQualityControl.Services
 {
@@ -13,32 +11,49 @@ namespace BloodQualityControl.Services
         private const float MIN_BLOOD_QUALITY = 5f;
         private const float MAX_BLOOD_QUALITY = 100f;
 
-        private float lowestBloodQuality;
-        private float highestBloodQuality;
+        private Action<string> OnFailure;
+        private Action<string> OnSuccess;
 
         public BloodQualityControlService()
         {
-            this.lowestBloodQuality = MIN_BLOOD_QUALITY;
-            this.highestBloodQuality = MAX_BLOOD_QUALITY;
+            this.MinBloodQuality = MIN_BLOOD_QUALITY;
+            this.MaxBloodQuality = MAX_BLOOD_QUALITY;
         }
 
-        public float MinBloodQuality
+        public float MinBloodQuality { get; private set; }
+        public float MaxBloodQuality { get; private set; }
+
+        public void HookReplyCallbacks(Action<string> OnSuccess, Action<string> OnFailure)
         {
-            get => lowestBloodQuality;
-            set
+            this.OnSuccess = OnSuccess;
+            this.OnFailure = OnFailure;
+        }
+
+        public void OverrideBloodQualitySettings(float minBloodQuality, float maxBloodQuality)
+        {
+            if (!(5f <= minBloodQuality && minBloodQuality <= 100f))
             {
-                lowestBloodQuality = value;
-                BloodQualitySpawnSystem_Patch.Enabled = true;
+                OnFailure($"Minimum Blood Quality given {minBloodQuality} is not in the range of 5-100");
+                return;
             }
-        }
 
-        public float MaxBloodQuality
-        {
-            get => highestBloodQuality;
-            set
+            if (!(5f <= maxBloodQuality && maxBloodQuality <= 100f))
             {
-                highestBloodQuality = value;
+                OnFailure($"Maximum Blood Quality given {maxBloodQuality} is not in the range of 5-100");
+                return;
+            }
+
+            if (minBloodQuality > maxBloodQuality)
+            {
+                OnFailure($"The given Minimum Blood Quality {minBloodQuality} is higher than the current Max Blood Quality {maxBloodQuality}");
+                return;
+            }
+            else
+            {
+                MinBloodQuality = minBloodQuality;
+                MaxBloodQuality = maxBloodQuality;
                 BloodQualitySpawnSystem_Patch.Enabled = true;
+                OnSuccess(GetFormattedSettings());
             }
         }
 
@@ -47,9 +62,15 @@ namespace BloodQualityControl.Services
             BloodQualitySpawnSystem_Patch.Enabled = false;
         }
 
-        public string GetFormattedSettings()
+        private string GetFormattedSettings()
         {
-            return $"MIN BLOOD QUALITY: {MinBloodQuality}\nMAX BLOOD QUALITY: {MaxBloodQuality}\nBLOOD QUALITY RANGE: {MinBloodQuality}-{MaxBloodQuality}";
+            return $"\nMIN BLOOD QUALITY: {MinBloodQuality}\nMAX BLOOD QUALITY: {MaxBloodQuality}\nBLOOD QUALITY RANGE: {MinBloodQuality}-{MaxBloodQuality}";
+        }
+
+        public void UnhookReplyCallbacks()
+        {
+            this.OnSuccess = null;
+            this.OnFailure = null;
         }
     }
 
