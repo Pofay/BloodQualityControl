@@ -4,10 +4,7 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using Bloodstone.API;
 using HarmonyLib;
-using ProjectM;
-using Unity.Entities;
 using VampireCommandFramework;
-using VRising.GameData;
 
 namespace BloodQualityControl;
 
