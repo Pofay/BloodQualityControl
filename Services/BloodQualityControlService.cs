@@ -11,9 +11,6 @@ namespace BloodQualityControl.Services
         private const float MIN_BLOOD_QUALITY = 5f;
         private const float MAX_BLOOD_QUALITY = 100f;
 
-        private Action<string> OnFailure;
-        private Action<string> OnSuccess;
-
         public BloodQualityControlService()
         {
             this.MinBloodQuality = MIN_BLOOD_QUALITY;
@@ -23,29 +20,23 @@ namespace BloodQualityControl.Services
         public float MinBloodQuality { get; private set; }
         public float MaxBloodQuality { get; private set; }
 
-        public void HookReplyCallbacks(Action<string> OnSuccess, Action<string> OnFailure)
-        {
-            this.OnSuccess = OnSuccess;
-            this.OnFailure = OnFailure;
-        }
-
-        public void OverrideBloodQualitySettings(float minBloodQuality, float maxBloodQuality)
+        public void OverrideBloodQualitySettings(Action<string> ReplyCallback, float minBloodQuality, float maxBloodQuality)
         {
             if (!(5f <= minBloodQuality && minBloodQuality <= 100f))
             {
-                OnFailure($"Minimum Blood Quality given {minBloodQuality} is not in the range of 5-100");
+                ReplyCallback($"Minimum Blood Quality given {minBloodQuality} is not in the range of 5-100");
                 return;
             }
 
             if (!(5f <= maxBloodQuality && maxBloodQuality <= 100f))
             {
-                OnFailure($"Maximum Blood Quality given {maxBloodQuality} is not in the range of 5-100");
+                ReplyCallback($"Maximum Blood Quality given {maxBloodQuality} is not in the range of 5-100");
                 return;
             }
 
             if (minBloodQuality > maxBloodQuality)
             {
-                OnFailure($"The given Minimum Blood Quality {minBloodQuality} is higher than the current Max Blood Quality {maxBloodQuality}");
+                ReplyCallback($"The given Minimum Blood Quality {minBloodQuality} is higher than the current Max Blood Quality {maxBloodQuality}");
                 return;
             }
             else
@@ -53,7 +44,7 @@ namespace BloodQualityControl.Services
                 MinBloodQuality = minBloodQuality;
                 MaxBloodQuality = maxBloodQuality;
                 BloodQualitySpawnSystem_Patch.Enabled = true;
-                OnSuccess(GetFormattedSettings());
+                ReplyCallback(GetFormattedSettings());
             }
         }
 
@@ -65,12 +56,6 @@ namespace BloodQualityControl.Services
         private string GetFormattedSettings()
         {
             return $"\nMIN BLOOD QUALITY: {MinBloodQuality}\nMAX BLOOD QUALITY: {MaxBloodQuality}\nBLOOD QUALITY RANGE: {MinBloodQuality}-{MaxBloodQuality}";
-        }
-
-        public void UnhookReplyCallbacks()
-        {
-            this.OnSuccess = null;
-            this.OnFailure = null;
         }
     }
 
