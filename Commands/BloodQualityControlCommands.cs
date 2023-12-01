@@ -1,3 +1,4 @@
+using ProjectM.Network;
 using VampireCommandFramework;
 
 namespace BloodQualityControl.Commands
@@ -11,7 +12,7 @@ namespace BloodQualityControl.Commands
             if (bloodQuality >= 5f && bloodQuality <= 100f)
             {
                 PluginServices.BloodQualityControlService.MinBloodQuality = bloodQuality;
-                ctx.Reply($"Units will now spawn with a minimum blood quality of {bloodQuality}");
+                ctx.Reply(PluginServices.BloodQualityControlService.GetFormattedSettings());
             }
             else
             {
@@ -25,7 +26,7 @@ namespace BloodQualityControl.Commands
             if (bloodQuality >= 5f && bloodQuality <= 100f)
             {
                 PluginServices.BloodQualityControlService.MaxBloodQuality = bloodQuality;
-                ctx.Reply($"Units will now spawn with a maximum blood quality of {bloodQuality}");
+                ctx.Reply(PluginServices.BloodQualityControlService.GetFormattedSettings());
             }
             else
             {
@@ -48,7 +49,7 @@ namespace BloodQualityControl.Commands
             {
                 PluginServices.BloodQualityControlService.MinBloodQuality = minQuality;
                 PluginServices.BloodQualityControlService.MaxBloodQuality = maxQuality;
-                ctx.Reply($"Units will now spawn with a blood quality between {minQuality}-{maxQuality}");
+                ctx.Reply(PluginServices.BloodQualityControlService.GetFormattedSettings());
             }
         }
 

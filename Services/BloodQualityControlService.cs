@@ -1,7 +1,10 @@
+using System;
 using HarmonyLib;
+using Il2CppSystem.Security.Util;
 using ProjectM;
 using ProjectM.Shared.Systems;
 using Unity.Entities;
+using VampireCommandFramework;
 
 namespace BloodQualityControl.Services
 {
@@ -10,8 +13,14 @@ namespace BloodQualityControl.Services
         private const float MIN_BLOOD_QUALITY = 5f;
         private const float MAX_BLOOD_QUALITY = 100f;
 
-        private float lowestBloodQuality = MIN_BLOOD_QUALITY;
-        private float highestBloodQuality = MAX_BLOOD_QUALITY;
+        private float lowestBloodQuality;
+        private float highestBloodQuality;
+
+        public BloodQualityControlService()
+        {
+            this.lowestBloodQuality = MIN_BLOOD_QUALITY;
+            this.highestBloodQuality = MAX_BLOOD_QUALITY;
+        }
 
         public float MinBloodQuality
         {
@@ -36,6 +45,11 @@ namespace BloodQualityControl.Services
         public void Disable()
         {
             BloodQualitySpawnSystem_Patch.Enabled = false;
+        }
+
+        public string GetFormattedSettings()
+        {
+            return $"MIN BLOOD QUALITY: {MinBloodQuality}\nMAX BLOOD QUALITY: {MaxBloodQuality}\nBLOOD QUALITY RANGE: {MinBloodQuality}-{MaxBloodQuality}";
         }
     }
 
