@@ -1,7 +1,13 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
+using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
+using Bloodstone.API;
 using HarmonyLib;
+using ProjectM;
+using Unity.Entities;
 using VampireCommandFramework;
+using VRising.GameData;
 
 namespace BloodQualityControl;
 
@@ -9,28 +15,36 @@ namespace BloodQualityControl;
 [BepInDependency("gg.deca.VampireCommandFramework")]
 [BepInDependency("gg.deca.Bloodstone")]
 [Bloodstone.API.Reloadable]
-public class Plugin : BasePlugin
+public class Plugin : BasePlugin, IRunOnInitialized
 {
     Harmony _harmony;
+
+    internal static ManualLogSource Logger;
 
     public override void Load()
     {
         // Plugin startup logic
+        Logger = Log;
         Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} version {MyPluginInfo.PLUGIN_VERSION} is loaded!");
 
         // Harmony patching
         _harmony = new Harmony(MyPluginInfo.PLUGIN_GUID);
         _harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
 
+
         // Register all commands in the assembly with VCF
         CommandRegistry.RegisterAll();
     }
-
     public override bool Unload()
     {
         CommandRegistry.UnregisterAssembly();
         _harmony?.UnpatchSelf();
         return true;
+    }
+
+    public void OnGameInitialized()
+    {
+        PluginServices.Initialize(VWorld.Server);
     }
 
     // // Uncomment for example commmand or delete
@@ -51,4 +65,5 @@ public class Plugin : BasePlugin
     // { 
     //     ctx.Reply($"You passed in {someString} and {num} and {num2}");
     // }
+
 }
