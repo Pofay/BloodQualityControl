@@ -102,12 +102,12 @@ namespace BloodQualityControl.Services
         private static void ConfigureBloodQuality(Entity entity, string prefabName, BloodConsumeSource blood)
         {
             var minBloodQuality = PluginServices.BloodQualityControlService.MinBloodQuality;
-            var MaxBloodQuality = PluginServices.BloodQualityControlService.MaxBloodQuality;
+            var maxBloodQuality = PluginServices.BloodQualityControlService.MaxBloodQuality;
             if (blood.BloodQuality <= minBloodQuality)
             {
                 PluginServices.Logger.LogInfo($"{nameof(BloodQualitySpawnSystem)}_Postfix: {entity}_{prefabName} has blood quality {blood.BloodQuality} <= {minBloodQuality}");
                 // Original uses a curve, implementation might change later.
-                var newBloodQuality = UnityEngine.Random.Range(minBloodQuality, MaxBloodQuality);
+                var newBloodQuality = UnityEngine.Random.Range(minBloodQuality, maxBloodQuality);
                 blood.BloodQuality = newBloodQuality;
                 PluginServices.ServerEntityManager.SetComponentData(entity, blood);
                 PluginServices.Logger.LogInfo($"{nameof(BloodQualitySpawnSystem)}_Postfix: Changing blood quality of {entity}_{prefabName} to {newBloodQuality}");
