@@ -93,13 +93,13 @@ namespace BloodQualityControl.Services
                     {
                         var characterName = PluginServices.GetCharacterNameFromPrefabGUID(PluginServices.GetPrefabGUID(entity));
                         PluginServices.Logger.LogInfo($"{nameof(BloodQualitySpawnSystem)}_Postfix: {characterName} has spawned with blood quality {blood.BloodQuality} ");
-                        ConfigureBloodQuality(entity, characterName, blood);
+                        OverrideBloodQualityCalculation(entity, characterName, blood);
                     }
                 }
             }
         }
 
-        private static void ConfigureBloodQuality(Entity entity, string prefabName, BloodConsumeSource blood)
+        private static void OverrideBloodQualityCalculation(Entity entity, string prefabName, BloodConsumeSource blood)
         {
             var minBloodQuality = PluginServices.BloodQualityControlService.MinBloodQuality;
             var maxBloodQuality = PluginServices.BloodQualityControlService.MaxBloodQuality;
