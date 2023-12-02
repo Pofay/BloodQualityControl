@@ -1,4 +1,5 @@
 using BepInEx.Logging;
+using BloodQualityControl.Config;
 using BloodQualityControl.Data;
 using BloodQualityControl.Services;
 using ProjectM;
@@ -15,7 +16,9 @@ namespace BloodQualityControl
         internal static void Initialize(World Server)
         {
             ServerEntityManager = Server.EntityManager;
+            PluginConfig.Initialize();
             BloodQualityControlService = new();
+            BloodQualityControlService.Initialize();
             Logger.LogInfo($"{nameof(Initialize)} completed");
         }
 
