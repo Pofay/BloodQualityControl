@@ -22,13 +22,13 @@ namespace BloodQualityControl.Services
 
         public void OverrideBloodQualitySettings(Action<string> ReplyCallback, float minBloodQuality, float maxBloodQuality)
         {
-            if (!(5f <= minBloodQuality && minBloodQuality <= 100f))
+            if (!(MIN_BLOOD_QUALITY <= minBloodQuality && minBloodQuality <= MAX_BLOOD_QUALITY))
             {
                 ReplyCallback($"The given Minimum Blood Quality {minBloodQuality} is not in the range of 5-100");
                 return;
             }
 
-            if (!(5f <= maxBloodQuality && maxBloodQuality <= 100f))
+            if (!(MIN_BLOOD_QUALITY <= maxBloodQuality && maxBloodQuality <= MAX_BLOOD_QUALITY))
             {
                 ReplyCallback($"The given Maximum Blood Quality {maxBloodQuality} is not in the range of 5-100");
                 return;
