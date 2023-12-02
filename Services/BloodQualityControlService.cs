@@ -21,9 +21,18 @@ namespace BloodQualityControl.Services
             {
                 PluginServices.Logger.LogInfo($"Mod is currently disabled, to enable please execute any command from this mod with the appropriate values.");
             }
-            MinBloodQuality = PluginConfig.MinBloodQuality.Value;
-            MaxBloodQuality = PluginConfig.MaxBloodQuality.Value;
-            BloodQualitySpawnSystem_Patch.Enabled = PluginConfig.Enabled.Value;
+            else
+            {
+                RestoreDefaultValuesForInvalidConfig();
+                OverrideBloodQualitySettings(PluginServices.Logger.LogInfo, PluginConfig.MinBloodQuality.Value, PluginConfig.MaxBloodQuality.Value);
+            }
+        }
+
+        private void RestoreDefaultValuesForInvalidConfig()
+        {
+            MinBloodQuality = QualityConstants.MIN_BLOOD_QUALITY;
+            MaxBloodQuality = QualityConstants.MAX_BLOOD_QUALITY;
+            BloodQualitySpawnSystem_Patch.Enabled = true;
         }
 
         public void OverrideBloodQualitySettings(Action<string> ReplyCallback, float minBloodQuality, float maxBloodQuality)
