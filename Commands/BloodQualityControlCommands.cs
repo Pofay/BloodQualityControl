@@ -25,7 +25,7 @@ namespace BloodQualityControl.Commands
             PluginServices.BloodQualityControlService.OverrideBloodQualitySettings(ctx.Reply, minBloodQuality: minBloodQuality, maxBloodQuality: maxBloodQuality);
         }
 
-        [Command(".disable", description: "Returns the blood quality settings to the defaults.")]
+        [Command(".disable", description: "Returns the blood quality settings to the defaults.", adminOnly: true)]
         public static void DisableCommand(ChatCommandContext ctx)
         {
             PluginServices.BloodQualityControlService.Disable();
