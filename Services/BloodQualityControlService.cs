@@ -24,19 +24,19 @@ namespace BloodQualityControl.Services
         {
             if (!(5f <= minBloodQuality && minBloodQuality <= 100f))
             {
-                ReplyCallback($"Minimum Blood Quality given {minBloodQuality} is not in the range of 5-100");
+                ReplyCallback($"The given Minimum Blood Quality {minBloodQuality} is not in the range of 5-100");
                 return;
             }
 
             if (!(5f <= maxBloodQuality && maxBloodQuality <= 100f))
             {
-                ReplyCallback($"Maximum Blood Quality given {maxBloodQuality} is not in the range of 5-100");
+                ReplyCallback($"The given Maximum Blood Quality {maxBloodQuality} is not in the range of 5-100");
                 return;
             }
 
             if (minBloodQuality > maxBloodQuality)
             {
-                ReplyCallback($"The given Minimum Blood Quality {minBloodQuality} is higher than the current Max Blood Quality {maxBloodQuality}");
+                ReplyCallback($"The given Minimum Blood Quality {minBloodQuality} is higher than the given Max Blood Quality {maxBloodQuality}");
                 return;
             }
             else
