@@ -1,6 +1,7 @@
 using System;
 using BloodQualityControl.Config;
 using BloodQualityControl.Constants;
+using BloodQualityControl.utils;
 using HarmonyLib;
 using ProjectM;
 using ProjectM.Shared.Systems;
@@ -23,46 +24,25 @@ namespace BloodQualityControl.Services
             }
             else
             {
-                RestoreDefaultValuesForInvalidConfig();
                 OverrideBloodQualitySettings(PluginServices.Logger.LogInfo, PluginConfig.MinBloodQuality.Value, PluginConfig.MaxBloodQuality.Value);
             }
         }
 
-        private void RestoreDefaultValuesForInvalidConfig()
-        {
-            MinBloodQuality = QualityConstants.MIN_BLOOD_QUALITY;
-            MaxBloodQuality = QualityConstants.MAX_BLOOD_QUALITY;
-            BloodQualitySpawnSystem_Patch.Enabled = true;
-        }
-
         public void OverrideBloodQualitySettings(Action<string> ReplyCallback, float minBloodQuality, float maxBloodQuality)
         {
-            if (!(QualityConstants.MIN_BLOOD_QUALITY <= minBloodQuality && minBloodQuality <= QualityConstants.MAX_BLOOD_QUALITY))
+            var validationMessage = Validations.ValidateBloodQuality(minBloodQuality, maxBloodQuality);
+            if (validationMessage != string.Empty)
             {
-                ReplyCallback($"The given Minimum Blood Quality {minBloodQuality} is not in the range of 5-100");
+                ReplyCallback(validationMessage);
                 return;
             }
 
-            if (!(QualityConstants.MIN_BLOOD_QUALITY <= maxBloodQuality && maxBloodQuality <= QualityConstants.MAX_BLOOD_QUALITY))
-            {
-                ReplyCallback($"The given Maximum Blood Quality {maxBloodQuality} is not in the range of 5-100");
-                return;
-            }
-
-            if (minBloodQuality > maxBloodQuality)
-            {
-                ReplyCallback($"The given Minimum Blood Quality {minBloodQuality} is higher than the given Max Blood Quality {maxBloodQuality}");
-                return;
-            }
-            else
-            {
-                MinBloodQuality = minBloodQuality;
-                MaxBloodQuality = maxBloodQuality;
-                BloodQualitySpawnSystem_Patch.Enabled = true;
-                PersistConfiguration();
-                ReplyCallback(GetFormattedSettings());
-                ReplyCallback("Persisted new values in config file.");
-            }
+            MinBloodQuality = minBloodQuality;
+            MaxBloodQuality = maxBloodQuality;
+            BloodQualitySpawnSystem_Patch.Enabled = true;
+            PersistConfiguration();
+            ReplyCallback(GetFormattedSettings());
+            ReplyCallback("Persisted new values in config file.");
         }
 
         private void PersistConfiguration()

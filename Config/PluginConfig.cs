@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BepInEx.Configuration;
 using BloodQualityControl.Constants;
+using BloodQualityControl.utils;
 
 namespace BloodQualityControl.Config
 {
@@ -29,6 +30,19 @@ namespace BloodQualityControl.Config
             Enabled = mainConfig.Bind("Main", "Enabled", false, "Determines whether the mod is enabled or not.");
             MinBloodQuality = mainConfig.Bind("Main", "MinimumBloodQuality", QualityConstants.MIN_BLOOD_QUALITY, "The minimum blood quality that units will spawn with. Should be a value between 5-100 and must not be higher than the MaxBloodQuality.");
             MaxBloodQuality = mainConfig.Bind("Main", "MaximumBloodQuality", QualityConstants.MAX_BLOOD_QUALITY, "The maximum blood quality that units will spawn with. Should be a value between 5-100 and must not be lower than the MinBloodQuality.");
+            ValidateBloodQualityValues();
+        }
+
+        private static void ValidateBloodQualityValues()
+        {
+            var validationMessage = Validations.ValidateBloodQuality(MinBloodQuality.Value, MaxBloodQuality.Value);
+            if (validationMessage != string.Empty)
+            {
+                PluginServices.Logger.LogInfo(validationMessage);
+                MinBloodQuality.Value = 5f;
+                MaxBloodQuality.Value = 100f;
+                Save();
+            }
         }
 
         public static void Save()
