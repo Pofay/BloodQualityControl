@@ -2,6 +2,11 @@
 
 A VRising mod to control the blood quality values of all creatures and mobs in the game that have a blood source.
 
+## Important Note:
+
+The mod will only change the blood quality of newly spawned mobs. It will not affect the mobs already spawned by the game.
+
+So for servers that just installed this mod, you may need to kill existing mobs so they will respawn with your applied blood quality settings the next time you see them.
 
 # Commands
 
@@ -58,9 +63,3 @@ MinimumBloodQuality = 50
 # Default value: 100
 MaximumBloodQuality = 100
 ```
-
-## Important Note:
-
-The mod will only change the blood quality of newly spawned mobs. It will not affect the mobs already spawned by the game.
-
-So for servers that just installed this mod, you may need to perform a cull (kill on sight) so that the mobs will respawn with your applied blood quality settings the next time you see them.
